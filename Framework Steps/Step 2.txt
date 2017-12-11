@@ -1,0 +1,124 @@
+package com.selenium.test;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class SeleniumSample {
+
+	WebDriver driver;
+	
+	
+	
+	
+
+	
+	@BeforeMethod 
+	public void setUp()
+	{
+	    driver = new FirefoxDriver();
+		driver.get("https://wordpress.com/");
+		
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		WebElement loginLinkElement = driver.findElement(By.linkText("Log In"));
+		loginLinkElement.click();
+	}
+	
+	@AfterMethod
+	public void tearDown()
+	{
+		//driver.manage().deleteAllCookies();
+		driver.close();
+	}
+	
+	
+	
+	//****negative test cases
+	@Test
+	public void testWithInvalidCharacters() {
+        
+		WebElement unElement = driver.findElement(By.id("user_login"));
+		unElement.sendKeys("ABC");
+
+		WebElement pwdElement = driver.findElement(By.id("user_pass"));
+		pwdElement.sendKeys("ABC");
+
+		WebElement loginBtnElement = driver.findElement(By.id("wp-submit"));
+		loginBtnElement.click();
+
+		String actualOp = driver.getPageSource();
+		String expectedOp = "<strong>ERROR</strong>: Invalid email or username.";
+
+		if (actualOp.contains(expectedOp)) {
+			System.out.println("Pass");
+		} else {
+			System.out.println("Fail");
+		}
+	}
+
+	@Test
+	public void testWithNumericCharacters() {
+
+		WebElement unElement = driver.findElement(By.id("user_login"));
+		unElement.sendKeys("123");
+
+		WebElement pwdElement = driver.findElement(By.id("user_pass"));
+		pwdElement.sendKeys("123");
+
+		WebElement loginBtnElement = driver.findElement(By.id("wp-submit"));
+		loginBtnElement.click();
+
+		String actualOp = driver.getPageSource();
+		String expectedOp = "<strong>ERROR</strong>: Invalid email or username.";
+
+		if (actualOp.contains(expectedOp)) {
+			System.out.println("Pass");
+		} else {
+			System.out.println("Failure due to numeric characters!");
+		}
+	}
+	//****end negative test cases
+	
+	
+	
+	//****postive test case
+	@Test
+	public void testWithValidCharacters() {
+        
+        WebElement userNameElement = driver.findElement(By.id("user_login"));
+        userNameElement.sendKeys("sam.levi.jnr@gmail.com");
+        
+        WebElement pwdTxtFieldElement = driver.findElement(By.id("user_pass"));
+        pwdTxtFieldElement.sendKeys("sam.levi1");
+        
+        WebElement logInBtn = driver.findElement(By.id("wp-submit"));
+        logInBtn.click();
+        
+        
+        String ActualpageSourceInfo = driver.getPageSource();
+        String expectedPageSourceInfo = "<strong>ERROR</strong>: Invalid email or username.";
+        
+        if (ActualpageSourceInfo.contains(expectedPageSourceInfo))
+        {
+        	System.out.println("Fails Test");
+        	
+        }
+        
+        else
+        {
+        	System.out.println("Pass Test");
+        }
+        
+	}
+
+	//****end postive test case
+	
+	
+	
+}
